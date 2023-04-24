@@ -44,5 +44,10 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PatchMapping(path = "/grantAdminRole/{userid}")
+    public void grantAdminRole(@PathVariable int userId) {
+        adminService.grantAdmineRole(userId);
+    }
+
 
 }
