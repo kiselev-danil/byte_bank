@@ -1,56 +1,71 @@
 package com.example.byte_bank.service;
 
+import com.example.byte_bank.entity.RoleEntity;
 import com.example.byte_bank.entity.UserEntity;
+import com.example.byte_bank.repository.RoleRepository;
 import com.example.byte_bank.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class AdminService extends UserService {
-    public AdminService(UserRepository repository, UserConverter converter) {
-        super(repository, converter);
+    public AdminService(UserRepository repositoryUser, RoleRepository repositoryRole, UserConverter converter) {
+        super(repositoryUser, repositoryRole, converter);
     }
 
     public boolean deleteUserById(int userId) {
-        if (repository.findById(userId).isEmpty()) {
+        if (repositoryUser.findById(userId).isEmpty()) {
             return false;
         }
-        UserEntity entity = this.repository.findById(userId).get();
-        repository.delete(entity);
+        UserEntity entity = this.repositoryUser.findById(userId).get();
+        repositoryUser.delete(entity);
         return true;
     }
 
     public boolean deleteUserByUsername(String userName) {
-        if (repository.findByLogin(userName).isEmpty()) {
+        if (repositoryUser.findByLogin(userName).isEmpty()) {
             return false;
         }
-        UserEntity entity = this.repository.findByLogin(userName).get();
-        repository.delete(entity);
+        UserEntity entity = this.repositoryUser.findByLogin(userName).get();
+        repositoryUser.delete(entity);
         return true;
     }
 
     public boolean deleteAllUsers() {
-        repository.deleteAll();
+        repositoryUser.deleteAll();
         return true;
     }
 
     public boolean creditToUserById(int bytesNumber, int userId) {
-        if (repository.findById(userId).isEmpty()) {
+        if (repositoryUser.findById(userId).isEmpty()) {
             return false;
         }
-        UserEntity entity = this.repository.findById(userId).get();
+        UserEntity entity = this.repositoryUser.findById(userId).get();
         entity.setBalance(entity.getBalance() + bytesNumber);
-        repository.save(entity);
+        repositoryUser.save(entity);
         return true;
     }
 
     public boolean creditToUserByUsername(int bytesNumber, String userName) {
-        if (repository.findByLogin(userName).isEmpty()) {
+        if (repositoryUser.findByLogin(userName).isEmpty()) {
             return false;
         }
-        UserEntity entity = this.repository.findByLogin(userName).get();
+        UserEntity entity = this.repositoryUser.findByLogin(userName).get();
         entity.setBalance(entity.getBalance() + bytesNumber);
-        repository.save(entity);
+        repositoryUser.save(entity);
         return true;
     }
+
+    public void grantAdmineRole(int userId) {
+        if (repositoryUser.findById(userId).isEmpty()) {
+            return;
+        }
+        UserEntity user = repositoryUser.findById(userId).get();
+        Set<RoleEntity> rs = user.getRoles();
+        rs.add(repositoryRole.findByName("ROLE_ADMIN").get());
+        user.setRoles(rs);
+    }
+
 }
