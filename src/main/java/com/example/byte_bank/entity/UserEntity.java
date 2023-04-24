@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
@@ -15,7 +17,7 @@ import jakarta.persistence.*;
 @Setter
 public class UserEntity {
 
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Integer id;
 
@@ -27,4 +29,7 @@ public class UserEntity {
 
     @Column
     private int balance;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<RoleEntity> roles;
 }
