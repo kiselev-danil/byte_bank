@@ -2,6 +2,7 @@ package com.example.byte_bank.controller;
 
 import com.example.byte_bank.form.UserRegistrationForm;
 import com.example.byte_bank.service.IUserService;
+import com.example.byte_bank.service.UserService;
 import com.example.byte_bank.view.UserView;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
 
-    IUserService userService;
+    UserService userService;
 
     @GetMapping(path = "/")
     public ResponseEntity<?> getAllUsers() {
@@ -28,6 +29,11 @@ public class UserController {
     @GetMapping(path = "/byid/{userId}")
     public UserView getUserByID(@PathVariable int userId) throws ChangeSetPersister.NotFoundException {
         return userService.getUserById(userId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+    }
+
+    @GetMapping(path = "/current_user")
+    public UserView getCurrentUser() throws ChangeSetPersister.NotFoundException {
+        return userService.getCurrentUser().orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
 
     @GetMapping(path = "/byLogin/{userName}")
@@ -44,10 +50,5 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(path = "/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationForm userForm) {
-        userService.registerUser(userForm);
 
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }
