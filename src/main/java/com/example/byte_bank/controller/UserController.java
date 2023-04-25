@@ -20,7 +20,7 @@ public class UserController {
 
     UserService userService;
 
-    @GetMapping(path = "/")
+    @GetMapping(path = "")
     public ResponseEntity<?> getAllUsers() {
         List<UserView> list = userService.getAllUsers();
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -42,6 +42,12 @@ public class UserController {
                     return new UsernameNotFoundException("Can not found user with name " + userName);
                 }
         );
+    }
+
+    @PostMapping(path = "")
+    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationForm userForm) {
+        userService.registerUser(userForm);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping(path = "/changePassword/{userId}")
